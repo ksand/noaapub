@@ -21,6 +21,7 @@ size_t mkarray(char *str, char strarray[][100], size_t size);
 time_t utctime(char *timestr, struct tm *tmreport);
 char *station(char *code, char data[]);
 int parse(char *datum, struct metdata *info, char data[]);
+int charpos(char *str, char c);
 
 int main(int argc, char *argv[])
 {
@@ -28,20 +29,48 @@ int main(int argc, char *argv[])
 	char strarray[MAXSTRINGS][100];
 	char icaocode[5];
 	size_t strcount, i;
+	int pos;
 	FILE * fp;
 	time_t utcsecs;
 	struct tm tmreport, *tmlocal;
 	struct stat filestatus;
 	struct metdata info;
+	char *argval, rawflag;
 
-	/* You can pass an ICAO code as an argument. If not, use the default */
+	/* Set the default weather station */
+	strcpy(icaocode, ICAO_CODE);
+
+	/* Set default flags */
+	rawflag = 'F';
+
+	/* Parse command-line arguments */
 	if (argc > 1)
 	{
-		if (strlen(argv[1]) == 4)
-			strcpy(icaocode, argv[1]);
+		for (i = 1; i < argc; i++)
+		{
+			strcpy(buf, argv[i]);
+			if (buf[0] == '-' && buf[1] == '-')
+			{
+				strcpy(data, &buf[2]);
+				argval = strchr(data, '=');
+				if (argval != NULL)
+				{
+					strcpy(buf, &argval[1]);
+					pos = charpos(data, '=');
+					data[pos] = '\0';
+					if (strlen(data) > 0 && strlen(buf) > 0)
+					{
+						printf("%s=%s\n", data, buf);
+						if (strcmp(data, "station") == 0)
+						{
+							if (strlen(buf) == 4)
+								strcpy(icaocode, buf);
+						}
+					}
+				}
+			}
+		}
 	}
-	else
-		strcpy(icaocode, ICAO_CODE);
 
 	/* Delete the local file weather.out if it exists  */
 	if (stat("weather.out", &filestatus) == 0)

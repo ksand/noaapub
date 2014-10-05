@@ -1,5 +1,5 @@
-all: weather.o parse.o mkarray.o windfrom.o station.o utctime.o disperr.o
-	cc -o weather weather.o parse.o mkarray.o windfrom.o station.o utctime.o disperr.o
+all: weather.o parse.o mkarray.o windfrom.o station.o utctime.o disperr.o charpos.o
+	cc -o weather weather.o parse.o mkarray.o windfrom.o station.o utctime.o disperr.o charpos.o
 
 weather.o: weather.c
 	cc -c -Wunused-variable weather.c
@@ -21,6 +21,9 @@ utctime.o: utctime.c
 
 disperr.o: disperr.c
 	cc -c disperr.c
+
+charpos.o: charpos.c
+	cc -c charpos.c
 
 clean:
 	rm *.o
