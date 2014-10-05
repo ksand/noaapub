@@ -60,12 +60,19 @@ int main(int argc, char *argv[])
 					data[pos] = '\0';
 					if (strlen(data) > 0 && strlen(buf) > 0)
 					{
-						printf("%s=%s\n", data, buf);
 						if (strcmp(data, "station") == 0)
 						{
 							if (strlen(buf) == 4)
 								strcpy(icaocode, buf);
 						}
+					}
+				}
+				else
+				{
+					if (strlen(data) > 0)
+					{
+						if (strcmp(data, "raw") == 0)
+							rawflag = 'T';
 					}
 				}
 			}
@@ -123,7 +130,9 @@ int main(int argc, char *argv[])
 
 	while (fgets(buf, BUFSIZE, fp) != NULL)
 	{
-		printf("%-15s %s", "RAW DATA:", buf);
+		if (rawflag == 'T')
+			printf("%-15s %s", "RAW DATA:", buf);
+
 		strcount = mkarray(buf, strarray, MAXSTRINGS);
 
 		for (i = 1; i < strcount; i++)
@@ -164,7 +173,9 @@ int main(int argc, char *argv[])
 	
 	while (fgets(buf, BUFSIZE, fp) != NULL)
 	{
-		printf("%-15s %s", "RAW DATA:", buf);
+		if (rawflag == 'T')
+			printf("%-15s %s", "RAW DATA:", buf);
+		
 		strcount = mkarray(buf, strarray, MAXSTRINGS);
 		info.prev[0] == 0x00;
 
